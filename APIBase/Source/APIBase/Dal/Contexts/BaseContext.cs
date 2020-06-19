@@ -11,7 +11,8 @@ namespace APIBase.DAL.Contexts
     {
         private readonly DbContextOptions _options;
 
-        public BaseContext(DbContextOptions options)
+        public BaseContext(
+            DbContextOptions options)
         {
             _options = options;
         }
@@ -22,7 +23,7 @@ namespace APIBase.DAL.Contexts
 
             await using (var context = new DbContext(_options))
             {
-                response = context.Database.GetPendingMigrations().AsQueryable().Any();
+                response = (await context.Database.GetPendingMigrationsAsync()).AsQueryable().Any();
             }
 
             return response;
@@ -36,7 +37,8 @@ namespace APIBase.DAL.Contexts
             }
         }
 
-        protected async Task<List<TEntity>> GetAllAsync<TEntity>() where TEntity : class
+        protected async Task<List<TEntity>> GetAllAsync<TEntity>()
+            where TEntity : class
         {
             List<TEntity> response;
 
@@ -48,7 +50,9 @@ namespace APIBase.DAL.Contexts
             return response;
         }
 
-        protected async Task<TEntity> GetByIdAsync<TEntity, TTypeId>(TTypeId id) where TEntity : class
+        protected async Task<TEntity> GetByIdAsync<TEntity, TTypeId>(
+            TTypeId id)
+            where TEntity : class
         {
             TEntity response;
 
@@ -60,7 +64,9 @@ namespace APIBase.DAL.Contexts
             return response;
         }
 
-        protected async Task<TEntity> AddAsync<TEntity>(TEntity entity) where TEntity : class
+        protected async Task<TEntity> AddAsync<TEntity>(
+            TEntity entity)
+            where TEntity : class
         {
             await using (var context = new DbContext(_options))
             {
@@ -71,7 +77,9 @@ namespace APIBase.DAL.Contexts
             return entity;
         }
 
-        protected async Task<List<TEntity>> AddRangeAsync<TEntity>(List<TEntity> entities) where TEntity : class
+        protected async Task<List<TEntity>> AddRangeAsync<TEntity>(
+            List<TEntity> entities)
+            where TEntity : class
         {
             await using (var context = new DbContext(_options))
             {
@@ -82,7 +90,9 @@ namespace APIBase.DAL.Contexts
             return entities;
         }
 
-        protected async Task<TEntity> UpdateAsync<TEntity>(TEntity entity) where TEntity : class
+        protected async Task<TEntity> UpdateAsync<TEntity>(
+            TEntity entity)
+            where TEntity : class
         {
             await using (var context = new DbContext(_options))
             {
@@ -93,7 +103,9 @@ namespace APIBase.DAL.Contexts
             return entity;
         }
 
-        protected async Task<List<TEntity>> UpdateAsync<TEntity>(List<TEntity> entities) where TEntity : class
+        protected async Task<List<TEntity>> UpdateAsync<TEntity>(
+            List<TEntity> entities)
+            where TEntity : class
         {
             await using (var context = new DbContext(_options))
             {
@@ -104,7 +116,9 @@ namespace APIBase.DAL.Contexts
             return entities;
         }
 
-        protected async Task<TEntity> RemoveAsync<TEntity>(TEntity entity) where TEntity : class
+        protected async Task<TEntity> RemoveAsync<TEntity>(
+            TEntity entity)
+            where TEntity : class
         {
             await using (var context = new DbContext(_options))
             {
@@ -115,7 +129,9 @@ namespace APIBase.DAL.Contexts
             return entity;
         }
 
-        protected async Task<List<TEntity>> RemoveRangeAsync<TEntity>(List<TEntity> entities) where TEntity : class
+        protected async Task<List<TEntity>> RemoveRangeAsync<TEntity>(
+            List<TEntity> entities)
+            where TEntity : class
         {
             await using (var context = new DbContext(_options))
             {

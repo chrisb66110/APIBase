@@ -5,7 +5,8 @@ namespace APIBase.Common.FileFunctions
 {
     public static class FileReader
     {
-        public static async Task<string> ReadFileAsStringAsync(string pathFile)
+        public static async Task<string> ReadFileAsStringAsync(
+            string pathFile)
         {
             using var fileStreamReader = new StreamReader(pathFile);
 
@@ -14,7 +15,8 @@ namespace APIBase.Common.FileFunctions
             return fileAsString;
         }
 
-        public static string ReadFileAsString(string pathFile)
+        public static string ReadFileAsString(
+            string pathFile)
         {
             using var fileStreamReader = new StreamReader(pathFile);
 

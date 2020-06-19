@@ -107,8 +107,8 @@ namespace APIBase.Dal.QueryableRepository
             return this;
         }
 
-        public IQueryableRepository<T> Include<TProperty>
-            (Expression<Func<T, TProperty>> navigationPropertyPath)
+        public IQueryableRepository<T> Include<TProperty>(
+            Expression<Func<T, TProperty>> navigationPropertyPath)
         {
             _source = _source.Include(navigationPropertyPath);
 
@@ -134,7 +134,8 @@ namespace APIBase.Dal.QueryableRepository
             return this;
         }
 
-        public IQueryableRepository<T> Intersect([NotNull]IQueryableRepository<T> other)
+        public IQueryableRepository<T> Intersect(
+            [NotNull]IQueryableRepository<T> other)
         {
             var sourceOther = ((QueryableRepository<T, TContext>)other).AsQueryable();
 
@@ -145,7 +146,8 @@ namespace APIBase.Dal.QueryableRepository
             return this;
         }
 
-        public IQueryableRepository<T> Union(IQueryableRepository<T> other)
+        public IQueryableRepository<T> Union(
+            IQueryableRepository<T> other)
         {
             var sourceOther = ((QueryableRepository<T, TContext>)other).AsQueryable();
 
@@ -156,7 +158,11 @@ namespace APIBase.Dal.QueryableRepository
             return this;
         }
 
-        public IQueryableRepository<TResult> Join<TInner, TKey, TResult>(IQueryableRepository<TInner> inner, Expression<Func<T, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<T, TInner, TResult>> resultSelector)
+        public IQueryableRepository<TResult> Join<TInner, TKey, TResult>(
+            IQueryableRepository<TInner> inner,
+            Expression<Func<T, TKey>> outerKeySelector,
+            Expression<Func<TInner, TKey>> innerKeySelector,
+            Expression<Func<T, TInner, TResult>> resultSelector)
             where TResult : class
             where TInner : class
         {

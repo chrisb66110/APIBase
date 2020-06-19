@@ -26,7 +26,8 @@ namespace APIBase.Dal.Repositories
         /*
          * Return the same queryable, for call when don't use filter
          */
-        private IQueryableRepository<TEntity> DefaultFilterFunction(IQueryableRepository<TEntity> queryable)
+        private IQueryableRepository<TEntity> DefaultFilterFunction(
+            IQueryableRepository<TEntity> queryable)
         {
             return queryable;
         }
@@ -114,7 +115,8 @@ namespace APIBase.Dal.Repositories
          * Get first or default with optional filter with group by
          */
         public async Task<TResultGroupBy> GetFirstOrDefaultAsync<TResultGroupBy>(
-            Func<IQueryableRepository<TEntity>, IQueryableRepository<TResultGroupBy>> filterFunction) where TResultGroupBy : class
+            Func<IQueryableRepository<TEntity>, IQueryableRepository<TResultGroupBy>> filterFunction)
+            where TResultGroupBy : class
         {
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
@@ -164,7 +166,8 @@ namespace APIBase.Dal.Repositories
          * Get last or default with optional filter
          */
         public async Task<TResultGroupBy> GetLastOrDefaultAsync<TResultGroupBy>(
-            Func<IQueryableRepository<TEntity>, IQueryableRepository<TResultGroupBy>> filterFunction) where TResultGroupBy : class
+            Func<IQueryableRepository<TEntity>, IQueryableRepository<TResultGroupBy>> filterFunction)
+            where TResultGroupBy : class
         {
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
@@ -218,7 +221,8 @@ namespace APIBase.Dal.Repositories
         /*
          * Add entity
          */
-        public async Task<TDto> AddAsync(TDto dto)
+        public async Task<TDto> AddAsync(
+            TDto dto)
         {
             var entity = _mapper.Map<TDto, TEntity>(dto);
 
@@ -236,7 +240,8 @@ namespace APIBase.Dal.Repositories
         /*
          * Add entities
          */
-        public async Task<List<TDto>> AddRangeAsync(List<TDto> dtos)
+        public async Task<List<TDto>> AddRangeAsync(
+            List<TDto> dtos)
         {
             var entities = _mapper.Map<List<TDto>, List<TEntity>>(dtos);
 
@@ -256,7 +261,8 @@ namespace APIBase.Dal.Repositories
          * Need the Id in Dto to update info
          * Don't change Id
          */
-        public async Task<TDto> UpdateAsync(TDto dto)
+        public async Task<TDto> UpdateAsync(
+            TDto dto)
         {
             var entity = _mapper.Map<TDto, TEntity>(dto);
 
@@ -276,7 +282,8 @@ namespace APIBase.Dal.Repositories
          * Need the Id in Dtos to update info
          * Don't change Id
          */
-        public async Task<List<TDto>> UpdateRangeAsync(List<TDto> dto)
+        public async Task<List<TDto>> UpdateRangeAsync(
+            List<TDto> dto)
         {
             var entities = _mapper.Map<List<TDto>, List<TEntity>>(dto);
 
@@ -295,7 +302,8 @@ namespace APIBase.Dal.Repositories
          * Delete entity
          * Need the Id in Dto to remove entity
          */
-        public async Task<TDto> RemoveAsync(TDto dto)
+        public async Task<TDto> RemoveAsync(
+            TDto dto)
         {
             var entity = _mapper.Map<TDto, TEntity>(dto);
 
@@ -314,7 +322,8 @@ namespace APIBase.Dal.Repositories
          * Delete entities
          * Need the Id in Dtos to remove entity
          */
-        public async Task<List<TDto>> RemoveRangeAsync(List<TDto> dtos)
+        public async Task<List<TDto>> RemoveRangeAsync(
+            List<TDto> dtos)
         {
             var entities = _mapper.Map<List<TDto>, List<TEntity>>(dtos);
 
@@ -332,7 +341,10 @@ namespace APIBase.Dal.Repositories
         /*
          * Upsert entity
          */
-        public async Task<TDto> UpsertAsync(TDto dto, Expression<Func<TEntity, object>> on, Expression<Func<TEntity, TEntity, TEntity>> whenMatched)
+        public async Task<TDto> UpsertAsync(
+            TDto dto,
+            Expression<Func<TEntity, object>> on,
+            Expression<Func<TEntity, TEntity, TEntity>> whenMatched)
         {
             var entity = _mapper.Map<TDto, TEntity>(dto);
 
@@ -349,7 +361,10 @@ namespace APIBase.Dal.Repositories
          * Upsert entities
          * Need the Id in Dtos to remove entity
          */
-        public async Task<List<TDto>> UpsertRangeAsync(List<TDto> dtos, Expression<Func<TEntity, object>> on, Expression<Func<TEntity, TEntity, TEntity>> whenMatched)
+        public async Task<List<TDto>> UpsertRangeAsync(
+            List<TDto> dtos,
+            Expression<Func<TEntity, object>> on,
+            Expression<Func<TEntity, TEntity, TEntity>> whenMatched)
         {
             var entities = _mapper.Map<List<TDto>, List<TEntity>>(dtos);
 

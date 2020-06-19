@@ -9,7 +9,8 @@ namespace APIBase.Common.RsaSecurityKeyReader
 {
     public static class RsaSecurityKeyReader
     {
-        public static async Task<RsaSecurityKey> GetSignInKeyAsync(string pathTempKey)
+        public static async Task<RsaSecurityKey> GetSignInKeyAsync(
+            string pathTempKey)
         {
             var tempKeyAsJson = await FileReader.ReadFileAsStringAsync(pathTempKey);
 
@@ -36,7 +37,8 @@ namespace APIBase.Common.RsaSecurityKeyReader
             return response;
         }
 
-        public static RsaSecurityKey GetSignInKey(string pathTempKey)
+        public static RsaSecurityKey GetSignInKey(
+            string pathTempKey)
         {
             var tempKeyAsJson = FileReader.ReadFileAsString(pathTempKey);
 

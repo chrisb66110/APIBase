@@ -9,12 +9,14 @@ namespace APIBase.Api.Controllers
     {
         protected readonly ILogger _logger;
 
-        protected BaseController(ILogger<BaseController> logger)
+        protected BaseController(
+            ILogger<BaseController> logger)
         {
             _logger = logger;
         }
 
-        protected ObjectResult CreateOkResponse(object content = null)
+        protected ObjectResult CreateOkResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -24,7 +26,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateInternalServerErrorResponse(object content = null)
+        protected ObjectResult CreateInternalServerErrorResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -34,7 +37,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateCreatedResponse(object content = null)
+        protected ObjectResult CreateCreatedResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -44,7 +48,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateAcceptedResponse(object content = null)
+        protected ObjectResult CreateAcceptedResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -54,7 +59,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateBadRequestResponse(object content = null)
+        protected ObjectResult CreateBadRequestResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -64,7 +70,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateInvalidDataResponse(string message = null)
+        protected ObjectResult CreateInvalidDataResponse(
+            string message = null)
         {
             var response = new ObjectResult($"{BaseConstants.INVALID_DATA} {message}")
             {
@@ -74,7 +81,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateUnauthorizedResponse(object content = null)
+        protected ObjectResult CreateUnauthorizedResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -84,7 +92,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateForbiddenResponse(object content = null)
+        protected ObjectResult CreateForbiddenResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -94,7 +103,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateNotFoundResponse(object content = null)
+        protected ObjectResult CreateNotFoundResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -104,7 +114,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateMethodNotAllowedResponse(object content = null)
+        protected ObjectResult CreateMethodNotAllowedResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -114,7 +125,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateRequestTimeoutResponse(object content = null)
+        protected ObjectResult CreateRequestTimeoutResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -124,7 +136,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateConflictResponse(object content = null)
+        protected ObjectResult CreateConflictResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -134,7 +147,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateBadGatewayResponse(object content = null)
+        protected ObjectResult CreateBadGatewayResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
@@ -144,7 +158,8 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
-        protected ObjectResult CreateGatewayTimeoutResponse(object content = null)
+        protected ObjectResult CreateGatewayTimeoutResponse(
+            object content = null)
         {
             var response = new ObjectResult(content ?? string.Empty)
             {
