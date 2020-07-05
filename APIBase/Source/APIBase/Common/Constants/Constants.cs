@@ -8,5 +8,7 @@ namespace APIBase.Common.Constants
         public const string INVALID_DATA = "Invalid Data.";
         public const string INVALID_ID = "The Id field is required.";
         public const string ERROR_MESSAGE = "An error has occurred.";
+
+        public const string ALLOWED_CORS_POLICY = "AllowedCorsPolicy";
     }
 }

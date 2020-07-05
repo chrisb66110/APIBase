@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace APIBase.Common.Settings
 {
@@ -6,5 +7,7 @@ namespace APIBase.Common.Settings
     public class BaseSettings
     {
         public BaseAuthenticationSettings AuthenticationSettings { get; set; }
+
+        public Dictionary<string, string> AllowedOrigins { get; set; }
     }
 }
