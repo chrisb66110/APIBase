@@ -1,0 +1,311 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using APIBase.Dal.Models;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+
+namespace APIBase.Dal.Repositories
+{
+    public class BaseLogRepository<TContext, TEntity, TTypeId, TEntityLog>
+        where TContext : DbContext
+        where TEntity : BaseEntity<TTypeId>
+        where TTypeId : struct, IComparable, IFormattable, IComparable<TTypeId>, IEquatable<TTypeId>
+        where TEntityLog : BaseEntityLog<TEntity, TTypeId>, new()
+    {
+        protected readonly DbContextOptions<TContext> _options;
+
+        protected BaseLogRepository(
+            DbContextOptions<TContext> options)
+        {
+            _options = options;
+        }
+
+        protected async Task<List<TEntity>> _GetAllAsync()
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            var response = await context.Set<TEntity>().AsNoTracking().ToListAsync();
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<TEntity> _GetByIdAsync(
+            TTypeId id)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            var response = await context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<TEntity> _GetByAsync(
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            var response = await context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(predicate);
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<TEntity> _AddAsync(
+            TEntity entity, string userChange)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            var response = await context.Set<TEntity>().AddAsync(entity);
+
+            var previousString = JsonConvert.SerializeObject(null);
+
+            var newString = JsonConvert.SerializeObject(entity);
+
+            var log = new TEntityLog()
+            {
+                Username = userChange,
+                DateTime = DateTime.UtcNow,
+                PreviousValue = previousString,
+                NewValue = newString
+            };
+
+            await context.Set<TEntityLog>().AddAsync(log);
+
+            await context.SaveChangesAsync();
+
+            await context.DisposeAsync();
+
+            return response.Entity;
+        }
+
+        protected async Task<List<TEntity>> _AddRangeAsync(
+            List<TEntity> entities,
+            string userChange)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            await context.Set<TEntity>().AddRangeAsync(entities);
+
+            foreach (var entity in entities)
+            {
+                var previousString = JsonConvert.SerializeObject(null);
+
+                var newString = JsonConvert.SerializeObject(entity);
+
+                var log = new TEntityLog
+                {
+                    Username = userChange,
+                    DateTime = DateTime.UtcNow,
+                    PreviousValue = previousString,
+                    NewValue = newString
+                };
+
+                await context.Set<TEntityLog>().AddAsync(log);
+            }
+
+            await context.SaveChangesAsync();
+
+            await context.DisposeAsync();
+
+            return entities;
+        }
+
+        protected async Task<TEntity> _UpdateAsync(
+            TEntity entity,
+            string userChange)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            TEntity response = null;
+            var oldEntity = await context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(entity.Id));
+
+            if (oldEntity != null)
+            {
+                context.Set<TEntity>().Update(entity);
+
+                var previousString = JsonConvert.SerializeObject(oldEntity);
+
+                var newString = JsonConvert.SerializeObject(entity);
+
+                var log = new TEntityLog
+                {
+                    Username = userChange,
+                    DateTime = DateTime.UtcNow,
+                    PreviousValue = previousString,
+                    NewValue = newString
+                };
+
+                await context.Set<TEntityLog>().AddAsync(log);
+
+                await context.SaveChangesAsync();
+
+                response = entity;
+            }
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<List<TEntity>> _UpdateRangeAsync(
+            List<TEntity> entities,
+            string userChange)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            List<TEntity> response = null;
+
+            var ids = entities.Select(e => e.Id);
+
+            var oldEntities = await context.Set<TEntity>().Where(e => ids.Contains(e.Id)).AsNoTracking().ToListAsync();
+
+            if (oldEntities.Count == entities.Count)
+            {
+                context.Set<TEntity>().UpdateRange(entities);
+
+                foreach (var oldEntity in oldEntities)
+                {
+                    var previousString = JsonConvert.SerializeObject(oldEntity);
+
+                    var entity = entities.First(e => e.Id.Equals(oldEntity.Id));
+
+                    var newString = JsonConvert.SerializeObject(entity);
+
+                    var log = new TEntityLog
+                    {
+                        Username = userChange,
+                        DateTime = DateTime.UtcNow,
+                        PreviousValue = previousString,
+                        NewValue = newString
+                    };
+
+                    await context.Set<TEntityLog>().AddAsync(log);
+                }
+
+                await context.SaveChangesAsync();
+
+                response = entities;
+            }
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<TEntity> _RemoveAsync(
+            TEntity entity,
+            string userChange)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            TEntity response = null;
+            var oldEntity = await context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(entity.Id));
+
+            if (oldEntity != null)
+            {
+                context.Set<TEntity>().Remove(entity);
+
+                var previousString = JsonConvert.SerializeObject(oldEntity);
+
+                var newString = JsonConvert.SerializeObject(null);
+
+                var log = new TEntityLog
+                {
+                    Username = userChange,
+                    DateTime = DateTime.UtcNow,
+                    PreviousValue = previousString,
+                    NewValue = newString
+                };
+
+                await context.Set<TEntityLog>().AddAsync(log);
+
+                await context.SaveChangesAsync();
+
+                response = oldEntity;
+            }
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<List<TEntity>> _RemoveRangeAsync(
+            List<TEntity> entities,
+            string userChange)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            List<TEntity> response = null;
+
+            var ids = entities.Select(e => e.Id);
+
+            var oldEntities = await context.Set<TEntity>().Where(e => ids.Contains(e.Id)).AsNoTracking().ToListAsync();
+
+            if (oldEntities.Count == entities.Count)
+            {
+                context.Set<TEntity>().RemoveRange(entities);
+
+                foreach (var entity in entities)
+                {
+                    var oldEntity = oldEntities.First(e => e.Id.Equals(entity.Id));
+
+                    var previousString = JsonConvert.SerializeObject(oldEntity);
+
+                    var newString = JsonConvert.SerializeObject(null);
+
+                    var log = new TEntityLog
+                    {
+                        Username = userChange,
+                        DateTime = DateTime.UtcNow,
+                        PreviousValue = previousString,
+                        NewValue = newString
+                    };
+
+                    await context.Set<TEntityLog>().AddAsync(log);
+                }
+
+                await context.SaveChangesAsync();
+
+                response = oldEntities;
+            }
+
+            await context.DisposeAsync();
+
+            return response;
+        }
+
+        protected async Task<List<TEntityLog>> _GetLogsAsync(DateTime? from = default, DateTime? to = default)
+        {
+            var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
+
+            List<TEntityLog> response;
+
+            if (from != default && to != default)
+            {
+                response = await context.Set<TEntityLog>().Where(l => from < l.DateTime && l.DateTime > to).AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                response = await context.Set<TEntityLog>().AsNoTracking().ToListAsync();
+            }
+
+            await context.DisposeAsync();
+
+            foreach (var each in response)
+            {
+                each.PreviousEntity = JsonConvert.DeserializeObject<TEntity>(each.PreviousValue);
+                each.NewEntity = JsonConvert.DeserializeObject<TEntity>(each.NewValue);
+            }
+
+            return response;
+        }
+    }
+}

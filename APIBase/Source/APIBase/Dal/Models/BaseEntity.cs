@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace APIBase.Dal.Models
 {
     [ExcludeFromCodeCoverage]
-    public class BaseEntity<T>
+    public abstract class BaseEntity<T>
         where T : struct, IComparable, IFormattable, IComparable<T>, IEquatable<T>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
