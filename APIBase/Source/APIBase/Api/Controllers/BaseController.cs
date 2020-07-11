@@ -26,6 +26,16 @@ namespace APIBase.Api.Controllers
             return response;
         }
 
+        protected ObjectResult CreateNoContentResponse()
+        {
+            var response = new ObjectResult(string.Empty)
+            {
+                StatusCode = (int)HttpStatusCode.NoContent
+            };
+
+            return response;
+        }
+
         protected ObjectResult CreateInternalServerErrorResponse(
             object content = null)
         {
