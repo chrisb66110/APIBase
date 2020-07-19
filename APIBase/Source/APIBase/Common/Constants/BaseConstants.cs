@@ -11,7 +11,14 @@ namespace APIBase.Common.Constants
         public const string ERROR_MESSAGE = "An error has occurred.";
         public const string ERROR_MESSAGE_DUPLICATE = "Duplicate error.";
         public const string ERROR_MESSAGE_ENTITY_DONT_EXIST = "The sent entity did not exist.";
-        //Const
+        
+        //Auth Const
+        public const string AUTH_CLAIM_EMAIL = "Email";
+        public const string AUTH_CLAIM_USERNAME = "Username";
+        public const string AUTH_CLAIM_ROLE = "Role";
+        public const string AUTH_CLAIM_SCOPE = "scope";
+
+        //Pg Const
         public const string PG_DUPLICATE_ERROR = "23505";
         public const string PG_ERROR_DONT_AFFECT_ENTITY = "Database operation expected to affect 1 row(s) but actually affected 0 row(s).";
 

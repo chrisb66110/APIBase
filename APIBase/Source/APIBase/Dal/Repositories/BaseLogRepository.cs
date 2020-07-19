@@ -3,24 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using APIBase.Common.AuthFunctions;
 using APIBase.Dal.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace APIBase.Dal.Repositories
 {
-    public class BaseLogRepository<TContext, TEntity, TTypeId, TEntityLog>
+    /*
+     *To use this Repository, you need register in StartUp:
+     *      builder.RegisterType<TokenFunctions>().AsImplementedInterfaces().InstancePerDependency();
+     *      builder.RegisterType<HttpContextAccessor>().AsImplementedInterfaces().InstancePerDependency();
+     */
+    public abstract class BaseLogRepository<TContext, TEntity, TTypeId, TEntityLog>
         where TContext : DbContext
         where TEntity : BaseEntity<TTypeId>
         where TTypeId : struct, IComparable, IFormattable, IComparable<TTypeId>, IEquatable<TTypeId>
         where TEntityLog : BaseEntityLog<TEntity, TTypeId>, new()
     {
         protected readonly DbContextOptions<TContext> _options;
+        protected readonly ITokenFunctions _tokenFunctions;
 
         protected BaseLogRepository(
-            DbContextOptions<TContext> options)
+            DbContextOptions<TContext> options,
+            ITokenFunctions tokenFunctions)
         {
             _options = options;
+            _tokenFunctions = tokenFunctions;
         }
 
         protected async Task<List<TEntity>> _GetAllAsync()
@@ -59,8 +68,10 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<TEntity> _AddAsync(
-            TEntity entity, string userChange)
+            TEntity entity)
         {
+            var userChange = _tokenFunctions.GetUsername();
+
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
             var response = await context.Set<TEntity>().AddAsync(entity);
@@ -87,9 +98,10 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<List<TEntity>> _AddRangeAsync(
-            List<TEntity> entities,
-            string userChange)
+            List<TEntity> entities)
         {
+            var userChange = _tokenFunctions.GetUsername();
+
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
             await context.Set<TEntity>().AddRangeAsync(entities);
@@ -119,9 +131,10 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<TEntity> _UpdateAsync(
-            TEntity entity,
-            string userChange)
+            TEntity entity)
         {
+            var userChange = _tokenFunctions.GetUsername();
+
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
             TEntity response = null;
@@ -156,9 +169,10 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<List<TEntity>> _UpdateRangeAsync(
-            List<TEntity> entities,
-            string userChange)
+            List<TEntity> entities)
         {
+            var userChange = _tokenFunctions.GetUsername();
+
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
             List<TEntity> response = null;
@@ -201,9 +215,10 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<TEntity> _RemoveAsync(
-            TEntity entity,
-            string userChange)
+            TEntity entity)
         {
+            var userChange = _tokenFunctions.GetUsername();
+
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
             TEntity response = null;
@@ -238,9 +253,10 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<List<TEntity>> _RemoveRangeAsync(
-            List<TEntity> entities,
-            string userChange)
+            List<TEntity> entities)
         {
+            var userChange = _tokenFunctions.GetUsername();
+
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
             List<TEntity> response = null;
