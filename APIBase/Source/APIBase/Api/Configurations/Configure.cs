@@ -68,6 +68,7 @@ namespace APIBase.Api.Configurations
                 {
                     builder.WithOrigins(allowedCors);
                     builder.WithMethods(methodsAllowed);
+                    builder.AllowAnyHeader();
                 });
             });
         }

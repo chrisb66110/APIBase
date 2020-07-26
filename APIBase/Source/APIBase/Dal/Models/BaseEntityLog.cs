@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace APIBase.Dal.Models
@@ -7,10 +8,11 @@ namespace APIBase.Dal.Models
         where TToLog : BaseEntity<TToLogId>
         where TToLogId : struct, IComparable, IFormattable, IComparable<TToLogId>, IEquatable<TToLogId>
     {
-        public string Username { get; set; }
-        public DateTime DateTime { get; set; }
-        public string PreviousValue { get; set; }
-        public string NewValue { get; set; }
+        [Required] public string Username { get; set; }
+        [Required] public DateTime DateTime { get; set; }
+        [Required] public string PreviousValue { get; set; }
+        [Required] public string NewValue { get; set; }
+        [Required] public string MethodName { get; set; }
         [NotMapped] public TToLog PreviousEntity { get; set; }
         [NotMapped] public TToLog NewEntity { get; set; }
     }

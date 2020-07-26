@@ -17,6 +17,7 @@ namespace APIBase.Common.Constants
         public const string AUTH_CLAIM_USERNAME = "Username";
         public const string AUTH_CLAIM_ROLE = "Role";
         public const string AUTH_CLAIM_SCOPE = "scope";
+        public const string AUTH_USER_NO_LOGIN = "System - User no login";
 
         //Pg Const
         public const string PG_DUPLICATE_ERROR = "23505";

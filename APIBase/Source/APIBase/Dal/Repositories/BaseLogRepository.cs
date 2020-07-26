@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using APIBase.Common.AuthFunctions;
+using APIBase.Common.Constants;
 using APIBase.Dal.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -70,7 +71,7 @@ namespace APIBase.Dal.Repositories
         protected async Task<TEntity> _AddAsync(
             TEntity entity)
         {
-            var userChange = _tokenFunctions.GetUsername();
+            var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
@@ -78,12 +79,13 @@ namespace APIBase.Dal.Repositories
 
             var previousString = JsonConvert.SerializeObject(null);
 
-            var newString = JsonConvert.SerializeObject(entity);
+            var newString = JsonConvert.SerializeObject(response.Entity);
 
             var log = new TEntityLog()
             {
                 Username = userChange,
                 DateTime = DateTime.UtcNow,
+                MethodName = "_AddAsync",
                 PreviousValue = previousString,
                 NewValue = newString
             };
@@ -100,22 +102,23 @@ namespace APIBase.Dal.Repositories
         protected async Task<List<TEntity>> _AddRangeAsync(
             List<TEntity> entities)
         {
-            var userChange = _tokenFunctions.GetUsername();
+            var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
-            await context.Set<TEntity>().AddRangeAsync(entities);
-
             foreach (var entity in entities)
             {
+                var result = await context.Set<TEntity>().AddAsync(entity);
+
                 var previousString = JsonConvert.SerializeObject(null);
 
-                var newString = JsonConvert.SerializeObject(entity);
+                var newString = JsonConvert.SerializeObject(result.Entity);
 
                 var log = new TEntityLog
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
+                    MethodName = "_AddRangeAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -133,7 +136,7 @@ namespace APIBase.Dal.Repositories
         protected async Task<TEntity> _UpdateAsync(
             TEntity entity)
         {
-            var userChange = _tokenFunctions.GetUsername();
+            var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
@@ -142,16 +145,17 @@ namespace APIBase.Dal.Repositories
 
             if (oldEntity != null)
             {
-                context.Set<TEntity>().Update(entity);
+                var result = context.Set<TEntity>().Update(entity);
 
                 var previousString = JsonConvert.SerializeObject(oldEntity);
 
-                var newString = JsonConvert.SerializeObject(entity);
+                var newString = JsonConvert.SerializeObject(result.Entity);
 
                 var log = new TEntityLog
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
+                    MethodName = "_UpdateAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -171,7 +175,7 @@ namespace APIBase.Dal.Repositories
         protected async Task<List<TEntity>> _UpdateRangeAsync(
             List<TEntity> entities)
         {
-            var userChange = _tokenFunctions.GetUsername();
+            var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
@@ -181,33 +185,29 @@ namespace APIBase.Dal.Repositories
 
             var oldEntities = await context.Set<TEntity>().Where(e => ids.Contains(e.Id)).AsNoTracking().ToListAsync();
 
-            if (oldEntities.Count == entities.Count)
+            foreach (var entity in entities)
             {
-                context.Set<TEntity>().UpdateRange(entities);
+                var oldEntity = oldEntities.FirstOrDefault(e => e.Id.Equals(entity.Id));
+                var previousString = JsonConvert.SerializeObject(oldEntity);
 
-                foreach (var oldEntity in oldEntities)
+                var result = context.Set<TEntity>().Update(entity);
+                var newString = JsonConvert.SerializeObject(result.Entity);
+
+                var log = new TEntityLog
                 {
-                    var previousString = JsonConvert.SerializeObject(oldEntity);
+                    Username = userChange,
+                    DateTime = DateTime.UtcNow,
+                    MethodName = "_UpdateRangeAsync",
+                    PreviousValue = previousString,
+                    NewValue = newString
+                };
 
-                    var entity = entities.First(e => e.Id.Equals(oldEntity.Id));
-
-                    var newString = JsonConvert.SerializeObject(entity);
-
-                    var log = new TEntityLog
-                    {
-                        Username = userChange,
-                        DateTime = DateTime.UtcNow,
-                        PreviousValue = previousString,
-                        NewValue = newString
-                    };
-
-                    await context.Set<TEntityLog>().AddAsync(log);
-                }
-
-                await context.SaveChangesAsync();
-
-                response = entities;
+                await context.Set<TEntityLog>().AddAsync(log);
             }
+
+            await context.SaveChangesAsync();
+
+            response = entities;
 
             await context.DisposeAsync();
 
@@ -217,7 +217,7 @@ namespace APIBase.Dal.Repositories
         protected async Task<TEntity> _RemoveAsync(
             TEntity entity)
         {
-            var userChange = _tokenFunctions.GetUsername();
+            var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
@@ -236,6 +236,7 @@ namespace APIBase.Dal.Repositories
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
+                    MethodName = "_RemoveAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -255,7 +256,7 @@ namespace APIBase.Dal.Repositories
         protected async Task<List<TEntity>> _RemoveRangeAsync(
             List<TEntity> entities)
         {
-            var userChange = _tokenFunctions.GetUsername();
+            var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
             var context = (TContext)Activator.CreateInstance(typeof(TContext), _options);
 
@@ -281,6 +282,7 @@ namespace APIBase.Dal.Repositories
                     {
                         Username = userChange,
                         DateTime = DateTime.UtcNow,
+                        MethodName = "_RemoveRangeAsync",
                         PreviousValue = previousString,
                         NewValue = newString
                     };
