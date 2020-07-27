@@ -69,7 +69,8 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<TEntity> _AddAsync(
-            TEntity entity)
+            TEntity entity,
+            string methodName = null)
         {
             var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
@@ -85,7 +86,7 @@ namespace APIBase.Dal.Repositories
             {
                 Username = userChange,
                 DateTime = DateTime.UtcNow,
-                MethodName = "_AddAsync",
+                MethodName = methodName ?? "_AddAsync",
                 PreviousValue = previousString,
                 NewValue = newString
             };
@@ -100,7 +101,8 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<List<TEntity>> _AddRangeAsync(
-            List<TEntity> entities)
+            List<TEntity> entities,
+            string methodName = null)
         {
             var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
@@ -118,7 +120,7 @@ namespace APIBase.Dal.Repositories
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
-                    MethodName = "_AddRangeAsync",
+                    MethodName = methodName ?? "_AddRangeAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -134,7 +136,8 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<TEntity> _UpdateAsync(
-            TEntity entity)
+            TEntity entity,
+            string methodName = null)
         {
             var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
@@ -155,7 +158,7 @@ namespace APIBase.Dal.Repositories
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
-                    MethodName = "_UpdateAsync",
+                    MethodName = methodName ?? "_UpdateAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -173,7 +176,8 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<List<TEntity>> _UpdateRangeAsync(
-            List<TEntity> entities)
+            List<TEntity> entities,
+            string methodName = null)
         {
             var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
@@ -197,7 +201,7 @@ namespace APIBase.Dal.Repositories
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
-                    MethodName = "_UpdateRangeAsync",
+                    MethodName = methodName ?? "_UpdateRangeAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -215,7 +219,8 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<TEntity> _RemoveAsync(
-            TEntity entity)
+            TEntity entity,
+            string methodName = null)
         {
             var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
@@ -236,7 +241,7 @@ namespace APIBase.Dal.Repositories
                 {
                     Username = userChange,
                     DateTime = DateTime.UtcNow,
-                    MethodName = "_RemoveAsync",
+                    MethodName = methodName ?? "_RemoveAsync",
                     PreviousValue = previousString,
                     NewValue = newString
                 };
@@ -254,7 +259,8 @@ namespace APIBase.Dal.Repositories
         }
 
         protected async Task<List<TEntity>> _RemoveRangeAsync(
-            List<TEntity> entities)
+            List<TEntity> entities,
+            string methodName = null)
         {
             var userChange = _tokenFunctions.GetUsername() ?? BaseConstants.AUTH_USER_NO_LOGIN;
 
@@ -282,7 +288,7 @@ namespace APIBase.Dal.Repositories
                     {
                         Username = userChange,
                         DateTime = DateTime.UtcNow,
-                        MethodName = "_RemoveRangeAsync",
+                        MethodName = methodName ?? "_RemoveRangeAsync",
                         PreviousValue = previousString,
                         NewValue = newString
                     };
